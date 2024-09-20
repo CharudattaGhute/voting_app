@@ -1,0 +1,72 @@
+/* Scope CSS only to the .vote-page class to make it specific to this page */
+.vote-page body {
+    background-color: #f8f9fa;
+  }
+  
+  .container-v {
+    max-width: 800px; /* Set a maximum width */
+    width: 90%; /* Set a width relative to the viewport */
+    margin: 0 auto; /* Center the container */
+    padding: 20px; /* Optional padding */
+  }
+  
+  .vote-page .card {
+    border-radius: 0.5rem; /* Slightly rounded corners */
+  }
+  
+  .vote-page .card-title {
+    font-weight: bold;
+    font-size: 1.5rem; /* Increase font size for better visibility */
+    color: #333;
+  }
+  
+  .vote-page .instructions-box {
+    margin-top: 20px;
+  }
+  
+  .vote-page .instructions-box ul {
+    padding-left: 20px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  
+  .vote-page .instructions-box li {
+    margin-bottom: 10px;
+  }
+  
+  .vote-page button {
+    width: 100px;
+  }
+  
+  .vote-page input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 576px) {
+    .vote-page .card-title {
+      font-size: 1.2rem; /* Smaller font size for mobile */
+    }
+    
+    .vote-page .instructions-box ul {
+      font-size: 0.8rem; /* Smaller font size for mobile */
+    }
+  
+    .vote-page button {
+      width: 80px; /* Reduce button width for smaller screens */
+    }
+  }
+  
+  @media (min-width: 577px) and (max-width: 768px) {
+    .vote-page .card-title {
+      font-size: 1.3rem; /* Adjust font size for tablet */
+    }
+    
+    .vote-page .instructions-box ul {
+      font-size: 0.85rem; /* Slightly smaller for tablet */
+    }
+  
+    .vote-page button {
+      width: 90px; /* Adjust button width for tablet */
+    }
+  }

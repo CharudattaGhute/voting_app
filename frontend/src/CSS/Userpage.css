@@ -1,0 +1,83 @@
+/* Userpage container */
+.Userpage {
+    background-color: #0b213e;
+    color: white;
+    min-height: 100vh;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Profile container */
+  .profile-container {
+    display: flex;
+    background-color: #14213d;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 1300px;
+    width: 100%;
+    min-height: 500px; 
+    height: 600px;
+  }
+  
+  /* Profile image section */
+  .profile-image-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 50px;
+  }
+  
+  .profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid #2e475f;
+  }
+  
+  /* Change picture button */
+  .change-pic-btn {
+    margin-top: 20px;
+    padding: 8px 16px;
+    background-color: #28a745; /* Changed to a green color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .change-pic-btn:hover {
+    background-color: #218838; /* Darker green color on hover */
+  }
+  
+  /* Edit profile */
+  .edit-profile {
+    display: flex;
+    align-items: center;
+    margin-top: 20px; /* Added space between the button and the edit section */
+    color: #007bff;
+    cursor: pointer;
+  }
+  
+  .edit-profile i {
+    margin-right: 8px;
+  }
+  
+  /* Profile info section */
+  .profile-info-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-width: 500px;
+  }
+  
+  .profile-info-section p {
+    margin-bottom: 10px;
+  }
+  
+  .profile-info-section p strong {
+    color: #57d8ff;
+  }
+  

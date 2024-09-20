@@ -1,0 +1,63 @@
+/* General Styles for the Sign In Page */
+.signin-hero {
+    min-width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("../image//image.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #001124;
+  }
+  
+  .signin-container {
+    min-height: 100vh;
+    
+  }
+  
+  .signin-card {
+    max-width: 1000px;
+    border-radius: 0.50rem;
+    background-color:#FFFFFF;
+  }
+  
+  .signin-card-body {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+  }
+  
+  #signin-card {
+    border-radius: 0.25rem;
+    overflow: hidden;
+  }
+  
+  #signin-img {
+    border-top-left-radius: .25rem;
+    border-bottom-left-radius: .25rem;
+  }
+  
+  .input-group-text {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+  }
+  
+  .btn-danger {
+    background-color:#041dfb;
+    border: none;
+  }
+  
+  .btn-danger:hover {
+    background-color: #3c4ff7;
+  }
+  
+  .text-info {
+    color: #17a2b8;
+  }
+  
+  .text-info:hover {
+    text-decoration: underline;
+  }
+  
