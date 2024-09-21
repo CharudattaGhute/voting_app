@@ -5,6 +5,7 @@ const userrouter = require("./routes/userroute");
 const electionrouter = require("./routes/electionroute");
 const candidaterouter = require("./routes/candidateroute");
 const voterrouter = require("./routes/voterouter");
+const imagerouter = require("./routes/imageroute");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/api/user", userrouter);
 app.use("/api/elections", electionrouter);
 app.use("/api/candidate", candidaterouter);
 app.use("/api/voter", voterrouter);
+app.use("/api/image", imagerouter);
 
 app.use("/uploads", express.static("uploads"));
 

@@ -24,6 +24,7 @@ async function register(req, res) {
   try {
     const user = await usermodel.findOne({ email });
     if (!user) {
+      const image = req.file ? req.file.filename : null;
       const newUser = new usermodel({
         name,
         dateOfBirth,
@@ -34,6 +35,7 @@ async function register(req, res) {
         reenterPassword,
         Aadhar_Number,
         role,
+        image,
         age,
         address,
         eligible,
@@ -67,7 +69,7 @@ async function login(req, res) {
     }
     console.log("User Role at Login:", user.role);
     const token = jwt.sign({ _id: user._id, role: user.role }, "key", {
-      expiresIn: "1h",
+      expiresIn: "24h",
     });
     res.status(200).send({ user: user, access: token, success: true });
   } catch (error) {

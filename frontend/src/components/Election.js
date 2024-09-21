@@ -27,36 +27,11 @@ const ElectionList = () => {
           const now = new Date();
           const elections = response.data.newelection || [];
 
-          const updatedElections = await Promise.all(
-            elections.map(async (election) => {
-              try {
-                const voteCheckResponse = await axios.get(
-                  `http://localhost:5012/api/voter/checkUserVote/${election._id}`,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                  }
-                );
-                return {
-                  ...election,
-                  hasVoted: voteCheckResponse.data.voted,
-                };
-              } catch (voteError) {
-                console.error("Error checking user vote:", voteError);
-                return {
-                  ...election,
-                  hasVoted: false,
-                };
-              }
-            })
+          // Filter elections for upcoming and past without vote-checking
+          const upcoming = elections.filter(
+            (election) => new Date(election.start_date) > now
           );
-
-          const upcoming = updatedElections.filter(
-            (election) =>
-              new Date(election.start_date) > now && !election.hasVoted
-          );
-          const past = updatedElections.filter(
+          const past = elections.filter(
             (election) => new Date(election.start_date) <= now
           );
 
@@ -78,12 +53,8 @@ const ElectionList = () => {
     fetchElections();
   }, []);
 
-  const handleElectionClick = (electionId, hasVoted) => {
-    if (hasVoted) {
-      alert("You have already voted in this election.");
-    } else {
-      navigate(`/vote/${electionId}`);
-    }
+  const handleElectionClick = (electionId) => {
+    navigate(`/vote/${electionId}`);
   };
 
   return (
@@ -100,7 +71,7 @@ const ElectionList = () => {
           <div
             className="election-item"
             key={election._id}
-            onClick={() => handleElectionClick(election._id, election.hasVoted)}
+            onClick={() => handleElectionClick(election._id)}
             style={{ cursor: "pointer" }}
           >
             <span className="election-name">
@@ -122,7 +93,7 @@ const ElectionList = () => {
           <div
             className="election-item"
             key={election._id}
-            onClick={() => handleElectionClick(election._id, false)} // No voting for past elections
+            onClick={() => handleElectionClick(election._id)} // No voting for past elections
             style={{ cursor: "pointer" }}
           >
             <span className="election-name">

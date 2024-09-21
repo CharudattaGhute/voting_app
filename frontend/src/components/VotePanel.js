@@ -12,12 +12,35 @@ const VotingPanel = () => {
   const navigate = useNavigate();
   const [candidates, setCandidates] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [candidateInfo, setCandidateInfo] = useState(null);
   const [confirmVote, setConfirmVote] = useState(false);
   const [voteSubmitted, setVoteSubmitted] = useState(false);
+  const [hasVoted, setHasVoted] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCandidates = async () => {
       try {
+        const voteCheckResponse = await axios.get(
+          `http://localhost:5012/api/voter/hasvoted/${electionId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (voteCheckResponse.data.hasVoted) {
+          console.log(voteCheckResponse.data);
+          setHasVoted(true);
+
+          toast.info("You have already voted in this election.", {
+            position: "top-right",
+          });
+          setLoading(false);
+          return;
+        }
+
         const response = await axios.get(
           `http://localhost:5012/api/elections/getelctioncandidate/${electionId}`,
           {
@@ -27,21 +50,38 @@ const VotingPanel = () => {
           }
         );
         setCandidates(response.data.candidates || []);
+        setLoading(false);
       } catch (error) {
+        console.error("Error fetching data:", error);
         toast.error("Failed to fetch candidates.", { position: "top-right" });
+        setLoading(false);
       }
     };
 
     fetchCandidates();
-  }, [electionId]);
+  }, [electionId, navigate]);
 
-  const handleSelect = (candidateId) => {
+  // Handle candidate selection
+  const handleSelect = async (candidateId) => {
     const selected = candidates.find(
       (candidate) => candidate._id === candidateId
     );
     setSelectedCandidate(selected);
+
+    try {
+      const response = await axios.get(
+        `http://localhost:5012/api/candidate/getcandidatinfo/${candidateId}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      setCandidateInfo(response.data.Candidate);
+    } catch (error) {
+      toast.error("Error fetching candidate info.", { position: "top-right" });
+    }
   };
 
+  // Handle vote submission
   const handleSubmit = async () => {
     if (!selectedCandidate) {
       toast.error("Please select a candidate before voting!", {
@@ -76,70 +116,98 @@ const VotingPanel = () => {
     }
   };
 
-  return (
-    <div className="voting-panel">
-      <Navbar />
-      <ToastContainer />
-      {voteSubmitted ? (
+  // If the vote has already been submitted
+  if (voteSubmitted) {
+    return (
+      <div className="voting-panel">
+        <Navbar />
+        <ToastContainer />
         <div className="thank-you-message">
           <h2>Thank you for your vote!</h2>
           <p>Your vote has been successfully submitted.</p>
           <Button onClick={() => navigate("/userinfo")}>Go Home</Button>
         </div>
+      </div>
+    );
+  }
+
+  // If the user has already voted, show a message
+  if (hasVoted) {
+    return (
+      <div className="voting-panel">
+        <Navbar />
+        <ToastContainer />
+        <h3>You have already voted in this election.</h3>
+        <Button onClick={() => navigate("/electionlist")}>
+          Go to Election List
+        </Button>
+      </div>
+    );
+  }
+
+  // Main render for voting panel if user hasn't voted yet
+  return (
+    <div className="voting-panel">
+      <Navbar />
+      <ToastContainer />
+      <h3>Select Your Candidate</h3>
+      {loading ? (
+        <p>Loading candidates...</p>
       ) : (
-        <div>
-          <h3>Select Your Candidate</h3>
-          <div className="candidates">
-            {candidates.map((candidate) => (
-              <Card
-                key={candidate._id}
-                className={`candidate-card ${
-                  selectedCandidate?._id === candidate._id ? "selected" : ""
-                }`}
-                onClick={() => handleSelect(candidate._id)}
-              >
-                <Card.Body>
-                  <Card.Title>{candidate.candidatename}</Card.Title>
-                  <Card.Text>Party: {candidate.Party}</Card.Text>
-                </Card.Body>
-              </Card>
-            ))}
-          </div>
-          {selectedCandidate && (
-            <Accordion className="confirmation-section">
-              <Accordion.Item eventKey="0">
-                <Accordion.Header>Candidate Info</Accordion.Header>
-                <Accordion.Body>
-                  <h4>You have selected:</h4>
-                  <p>
-                    <strong>Name:</strong> {selectedCandidate.candidatename}
-                  </p>
-                  <p>
-                    <strong>Party:</strong> {selectedCandidate.Party}
-                  </p>
-                  <p>
-                    <strong>Age:</strong> {selectedCandidate.age}
-                  </p>
-                  <p>
-                    <strong>Education:</strong> {selectedCandidate.education}
-                  </p>
-                  <input
-                    type="checkbox"
-                    id="confirmVote"
-                    checked={confirmVote}
-                    onChange={() => setConfirmVote(!confirmVote)}
-                  />
-                  <label htmlFor="confirmVote">
-                    I confirm my vote for {selectedCandidate.candidatename}.
-                  </label>
-                  <Button onClick={handleSubmit} className="submit-vote">
-                    Submit Vote
-                  </Button>
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
-          )}
+        <div className="candidates">
+          {candidates.map((candidate) => (
+            <Card
+              key={candidate._id}
+              className={`candidate-card ${
+                selectedCandidate?._id === candidate._id ? "selected" : ""
+              }`}
+              onClick={() => handleSelect(candidate._id)}
+            >
+              <Card.Body>
+                <Card.Title>{candidate.candidatename}</Card.Title>
+                <Card.Text>Party: {candidate.Party}</Card.Text>
+              </Card.Body>
+            </Card>
+          ))}
         </div>
+      )}
+      {selectedCandidate && (
+        <Accordion className="confirmation-section">
+          <Accordion.Item eventKey="0">
+            <Accordion.Header>Candidate Info</Accordion.Header>
+            <Accordion.Body>
+              <h4>You have selected:</h4>
+              <p>
+                <strong>Name:</strong> {selectedCandidate.candidatename}
+              </p>
+              <p>
+                <strong>Party:</strong> {selectedCandidate.Party}
+              </p>
+              {candidateInfo && (
+                <>
+                  <p>
+                    <strong>Age:</strong> {candidateInfo.Age}
+                  </p>
+                  <p>
+                    <strong>Education:</strong> {candidateInfo.Education}
+                  </p>
+                </>
+              )}
+              <input
+                type="checkbox"
+                id="confirmVote"
+                checked={confirmVote}
+                onChange={() => setConfirmVote(!confirmVote)}
+              />
+              <label htmlFor="confirmVote">
+                I confirm my vote for {selectedCandidate.candidatename}.
+              </label>
+              <Button onClick={handleSubmit} className="submit-vote">
+                Submit Vote
+              </Button>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
       )}
     </div>
   );

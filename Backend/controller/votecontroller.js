@@ -28,28 +28,29 @@ async function addvote(req, res) {
 
 // *************user already voted *****************
 
-async function checkUserVote(req, res) {
+async function hasvoted(req, res) {
   const { electionId } = req.params;
   const userId = req.user._id;
-  try {
-    const voteRecord = await votemodule.findOne({ userId, electionId });
 
-    if (voteRecord) {
-      return res.status(200).send({
-        success: true,
-        voted: true,
-      });
+  try {
+    // Log the IDs for debugging
+    console.log(`Checking vote for user: ${userId} in election: ${electionId}`);
+
+    // Find if the user has voted in the specific election
+    const vote = await votemodule.findOne({ electionId, userId });
+
+    // Return appropriate response based on the existence of the vote
+    if (vote) {
+      return res.json({ hasVoted: true });
     } else {
-      return res.status(200).send({
-        success: true,
-        voted: false,
-      });
+      return res.json({ hasVoted: false });
     }
   } catch (error) {
-    console.error("Error checking user vote:", error);
+    // Return a 500 status on error
+    console.error("Error finding vote:", error.message);
     return res.status(500).json({
       success: false,
-      message: "Server error",
+      message: `Error finding vote: ${error.message}`,
     });
   }
 }
@@ -100,6 +101,6 @@ async function getVotesPerElection(req, res) {
 
 module.exports = {
   addvote,
-  checkUserVote,
+  hasvoted,
   getVotesPerElection,
 };

@@ -40,6 +40,9 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "user"],
       default: "user",
     },
+    image: {
+      type: String,
+    },
     age: {
       type: Number,
       required: false,
