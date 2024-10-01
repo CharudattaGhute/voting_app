@@ -31,7 +31,7 @@ const VotingPanel = () => {
         );
 
         if (voteCheckResponse.data.hasVoted) {
-          console.log(voteCheckResponse.data);
+          console.log("voter data", voteCheckResponse.data);
           setHasVoted(true);
 
           toast.info("You have already voted in this election.", {
